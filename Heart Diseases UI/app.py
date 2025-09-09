@@ -4,8 +4,10 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
+uploaded_model = st.file_uploader("Upload trained model", type="pkl")
+
 try:
-    model = joblib.load(open("final_model.pkl", "rb"))
+    model = joblib.load(uploaded_model)
 except:
     model = None
 
@@ -83,6 +85,4 @@ if uploaded_file is not None:
     ax2.scatter(df['age'], df['chol'], c=df['num'], cmap='viridis', alpha=0.7)
     ax2.set_xlabel("Age")
     ax2.set_ylabel("Cholesterol")
-
     st.pyplot(fig2)
-

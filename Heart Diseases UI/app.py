@@ -4,6 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
+# Upload trained model
 uploaded_model = st.file_uploader("Upload trained model", type="pkl")
 
 try:
@@ -16,16 +17,19 @@ st.title("❤️ Heart Disease Prediction App")
 st.sidebar.header("Enter Patient Data")
 
 def user_input():
-    age = st.sidebar.number_input('Age', 20, 100, 50)
+    # Numeric features entered manually
+    age = st.sidebar.number_input('Age', min_value=20, max_value=100, value=50)
+    trestbps = st.sidebar.number_input('Resting BP (trestbps)', min_value=80, max_value=200, value=120)
+    chol = st.sidebar.number_input('Cholesterol (chol)', min_value=100, max_value=600, value=200)
+    thalach = st.sidebar.number_input('Max Heart Rate (thalach)', min_value=60, max_value=220, value=150)
+    oldpeak = st.sidebar.number_input('ST Depression (oldpeak)', min_value=0.0, max_value=6.0, value=1.0, step=0.1)
+
+    # Categorical features remain select boxes
     sex = st.sidebar.selectbox('Sex', [0, 1])
     cp = st.sidebar.selectbox('Chest Pain Type (cp)', [0, 1, 2, 3])
-    trestbps = st.sidebar.slider('Resting BP (trestbps)', 80, 200, 120)
-    chol = st.sidebar.slider('Cholesterol (chol)', 100, 600, 200)
     fbs = st.sidebar.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', [0, 1])
     restecg = st.sidebar.selectbox('Resting ECG (restecg)', [0, 1, 2])
-    thalach = st.sidebar.slider('Max Heart Rate (thalach)', 60, 220, 150)
     exang = st.sidebar.selectbox('Exercise Induced Angina (exang)', [0, 1])
-    oldpeak = st.sidebar.number_input('ST Depression (oldpeak)', 0.0, 6.0, 1.0, step=0.1)
     ca = st.sidebar.selectbox('No. of Major Vessels (ca)', [0, 1, 2, 3, 4])
     thal = st.sidebar.selectbox('Thalassemia (thal)', [0, 1, 2, 3])
     slope_down = st.sidebar.selectbox('Slope Downsloping', [0, 1])
@@ -43,29 +47,34 @@ def user_input():
     }
     return pd.DataFrame(data, index=[0])
 
+# Collect input
 input_df = user_input()
 
+# Scale numeric data
 scaler = StandardScaler()
-
 scaled_data = ['age', 'trestbps', 'chol', 'thalach']
 input_df[scaled_data] = scaler.fit_transform(input_df[scaled_data])
 
+# Show input data
 st.subheader("User Input Data")
 st.write(input_df)
 
+# Predict only when button is clicked
 if model:
-    prediction = model.predict(input_df)
-    prediction_proba = model.predict_proba(input_df)
+    if st.button("🔮 Predict"):
+        prediction = model.predict(input_df)
+        prediction_proba = model.predict_proba(input_df)
 
-    st.subheader("Prediction")
-    st.write("1 = Heart Disease, 0 = No Heart Disease")
-    st.write(f"Prediction: **{int(prediction[0])}**")
+        st.subheader("Prediction")
+        st.write("1 = Heart Disease, 0 = No Heart Disease")
+        st.write(f"Prediction: **{int(prediction[0])}**")
 
-    st.subheader("Prediction Probability")
-    st.write(prediction_proba)
+        st.subheader("Prediction Probability")
+        st.write(prediction_proba)
 else:
-    st.warning("Model file not found. Please train and load a model.")
+    st.warning("Model file not found. Please load a model.")
 
+# Upload dataset
 uploaded_file = st.file_uploader("Upload heart disease dataset (CSV)", type="csv")
 
 if uploaded_file is not None:

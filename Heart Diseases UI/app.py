@@ -54,19 +54,17 @@ st.subheader("User Input Data")
 st.write(input_df)
 
 # Predict only when button is clicked
-if model:
-    if st.button("🔮 Predict"):
-        prediction = model.predict(input_df)
-        prediction_proba = model.predict_proba(input_df)
 
-        st.subheader("Prediction")
-        st.write("1 = Heart Disease, 0 = No Heart Disease")
-        st.write(f"Prediction: **{int(prediction[0])}**")
+if st.button("🔮 Predict"):
+    prediction = model.predict(input_df)
+    prediction_proba = model.predict_proba(input_df)
 
-        st.subheader("Prediction Probability")
-        st.write(prediction_proba)
-else:
-    st.warning("Model file not found. Please load a model.")
+    st.subheader("Prediction")
+    st.write("1 = Heart Disease, 0 = No Heart Disease")
+    st.write(f"Prediction: **{int(prediction[0])}**")
+
+    st.subheader("Prediction Probability")
+    st.write(prediction_proba)
 
 # Upload dataset
 uploaded_file = st.file_uploader("Upload heart disease dataset (CSV)", type="csv")
@@ -89,4 +87,5 @@ if uploaded_file is not None:
     ax2.set_xlabel("Age")
     ax2.set_ylabel("Cholesterol")
     st.pyplot(fig2)
+
 

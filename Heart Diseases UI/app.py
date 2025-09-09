@@ -2,7 +2,6 @@ import joblib
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
 
 # Upload trained model
 uploaded_model = st.file_uploader("Upload trained model", type="pkl")
@@ -50,11 +49,6 @@ def user_input():
 # Collect input
 input_df = user_input()
 
-# Scale numeric data
-scaler = StandardScaler()
-scaled_data = ['age', 'trestbps', 'chol', 'thalach']
-input_df[scaled_data] = scaler.fit_transform(input_df[scaled_data])
-
 # Show input data
 st.subheader("User Input Data")
 st.write(input_df)
@@ -95,3 +89,4 @@ if uploaded_file is not None:
     ax2.set_xlabel("Age")
     ax2.set_ylabel("Cholesterol")
     st.pyplot(fig2)
+

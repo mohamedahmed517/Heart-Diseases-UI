@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
 try:
-    model = joblib.load('final_model.pkl')
+    model = pickle.load(open("final_model.pkl", "rb"))
 except:
     model = None
 
@@ -83,4 +83,5 @@ if uploaded_file is not None:
     ax2.scatter(df['age'], df['chol'], c=df['num'], cmap='viridis', alpha=0.7)
     ax2.set_xlabel("Age")
     ax2.set_ylabel("Cholesterol")
+
     st.pyplot(fig2)
